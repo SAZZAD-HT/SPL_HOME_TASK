@@ -1,0 +1,184 @@
+﻿@model SPL_HOME_TASK.Models.DocumentCategoryInfo
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<h2>Category Management</h2>
+
+<div id="categoryList">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Category ID</th>
+                <th>Category Name</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <button id="createCategoryBtn" class="btn btn-primary">Create Category</button>
+</div>
+
+<div id="categoryForm" style="display:none;">
+    <h4>Create/Edit Category</h4>
+    <form id="createCategoryForm" class="form-horizontal">
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CategoryName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CategoryName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CategoryName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+      
+        <div class="form-group">
+            @Html.LabelFor(model => model.CategoryNameBangla, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CategoryNameBangla, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CategoryNameBangla, "", new { @class = "text-danger" })  <br />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <button id="cancelCategoryBtn" class="btn btn-default">Cancel</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Load categories on page load
+            loadCategories();
+
+            // Show create category form
+            $('#createCategoryBtn').click(function () {
+                $('#categoryForm').show();
+                $('#createCategoryForm').attr('action', '@Url.Action("Create", "DocumentCategoryInfo")');
+            });
+
+            // Cancel category creation/edit
+            $('#cancelCategoryBtn').click(function () {
+                $('#categoryForm').hide();
+                $('#createCategoryForm')[0].reset();
+            });
+
+            // Submit create/edit category form via AJAX
+            $('#createCategoryForm').submit(function (event) {
+                event.preventDefault();
+                var formData = $(this).serialize();
+                var url = $(this).attr('action');
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: formData,
+                    success: function (result) {
+                        if (result.success) {
+                            loadCategories();
+                            $('#categoryForm').hide();
+                            $('#createCategoryForm')[0].reset();
+                        } else {
+                            alert('Error: ' + result.error);
+                        }
+                    }
+                });
+            });
+
+            // Edit category
+            $(document).on('click', '.editBtn', function () {
+                var id = $(this).data('id');
+                var url = '@Url.Action("GetCategoryById", "DocumentCategoryInfo")';
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    data: { id: id },
+                    success: function (result) {
+                        if (result) {
+                            $('#categoryForm').show();
+                            $('#createCategoryForm').attr('action', '@Url.Action("Update", "DocumentCategoryInfo")');
+                            $('#CategoryName').val(result.CategoryName);
+                            $('#Description').val(result.Description);
+                            $('#Status').val(result.Status);
+                            $('#CategoryId').val(result.CategoryId);
+                        } else {
+                            alert('Error: Category not found');
+                        }
+                    }
+                });
+            });
+
+            // Delete category
+            $(document).on('click', '.deleteBtn', function () {
+                if (confirm('Are you sure you want to delete this category?')) {
+                    var id = $(this).data('id');
+                    var url = '@Url.Action("Delete", "DocumentCategoryInfo")';
+
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: { id: id },
+                        success: function (result) {
+                            if (result.success) {
+                                loadCategories();
+                            } else {
+                                alert('Error: ' + result.error);
+                            }
+                        }
+                    });
+                }
+            });
+
+            // Load categories
+            function loadCategories() {
+                var url = '@Url.Action("GetCategories", "DocumentCategoryInfo")';
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function (result) {
+                        var tbody = $('#categoryList').find('tbody');
+                        tbody.empty();
+
+                        if (result && result.length > 0) {
+                            $.each(result, function (index, category) {
+                                var row = '<tr>' +
+                                    '<td>' + category.CategoryId + '</td>' +
+                                    '<td>' + category.CategoryName + '</td>' +
+                                    '<td>' + category.Description + '</td>' +
+                                    '<td>' + (category.Status ? 'Active' : 'Inactive') + '</td>' +
+                                    '<td>' +
+                                    '<button class="btn btn-primary editBtn" data-id="' + category.CategoryId + '">Edit</button> ' +
+                                    '<button class="btn btn-danger deleteBtn" data-id="' + category.CategoryId + '">Delete</button>' +
+                                    '</td>' +
+                                    '</tr>';
+
+                                tbody.append(row);
+                            });
+                        } else {
+                            var row = '<tr><td colspan="5">No categories found</td></tr>';
+                            tbody.append(row);
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}

@@ -1,92 +1,110 @@
-﻿using SPL_HOME_TASK.Models;
-using System.Data.Entity;
+﻿using System;
 using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using System.Web.Mvc;
+using SPL_HOME_TASK.Models;
 
 namespace SPL_HOME_TASK.Controllers
 {
     public class DocumentCategoryInfoController : Controller
     {
-        private SPLEntities db = new SPLEntities();
+        private readonly SPLEntities _context;
 
-        // GET: DocumentCategoryInfo
+        public DocumentCategoryInfoController()
+        {
+            _context = new SPLEntities();
+        }
+
         public ActionResult Index()
         {
             return View();
         }
 
-        // GET: DocumentCategoryInfo/GetCategories
-        public ActionResult GetCategories()
+        [HttpGet]
+        public JsonResult GetCategories()
         {
-            var categories = db.DocumentCategoryInfoes.ToList();
+            var categories = _context.DocumentCategoryInfoes.ToList();
             return Json(categories, JsonRequestBehavior.AllowGet);
         }
 
-        // POST: DocumentCategoryInfo/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(DocumentCategoryInfo documentCategoryInfo)
+        public JsonResult Create(DocumentCategoryInfo category)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.DocumentCategoryInfoes.Add(documentCategoryInfo);
-                await db.SaveChangesAsync();
+                _context.DocumentCategoryInfoes.Add(category);
+                _context.SaveChanges();
+
                 return Json(new { success = true });
             }
-
-            return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors) });
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
         }
 
-        // GET: DocumentCategoryInfo/GetCategoryById/5
-        public ActionResult GetCategoryById(int? id)
+        [HttpGet]
+        public JsonResult GetCategoryById(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            DocumentCategoryInfo documentCategoryInfo = db.DocumentCategoryInfoes.Find(id);
-            if (documentCategoryInfo == null)
-            {
-                return HttpNotFound();
-            }
-
-            return Json(documentCategoryInfo, JsonRequestBehavior.AllowGet);
+            var category = _context.DocumentCategoryInfoes.FirstOrDefault(c => c.CategoryId == id);
+            return Json(category, JsonRequestBehavior.AllowGet);
         }
 
-        // POST: DocumentCategoryInfo/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(DocumentCategoryInfo documentCategoryInfo)
+        public JsonResult Update(DocumentCategoryInfo category)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.Entry(documentCategoryInfo).State = EntityState.Modified;
-                await db.SaveChangesAsync();
-                return Json(new { success = true });
-            }
+                var existingCategory = _context.DocumentCategoryInfoes.FirstOrDefault(c => c.CategoryId == category.CategoryId);
+                if (existingCategory != null)
+                {
+                    existingCategory.CategoryName = category.CategoryName;
+                    existingCategory.Description = category.Description;
+                    existingCategory.Status = category.Status;
 
-            return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors) });
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+                else
+                {
+                    return Json(new { success = false, error = "Category not found" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
         }
 
-        // POST: DocumentCategoryInfo/Delete/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Delete(int id)
+        public JsonResult Delete(int id)
         {
-            DocumentCategoryInfo documentCategoryInfo = await db.DocumentCategoryInfoes.FindAsync(id);
-            db.DocumentCategoryInfoes.Remove(documentCategoryInfo);
-            await db.SaveChangesAsync();
-            return Json(new { success = true });
+            try
+            {
+                var category = _context.DocumentCategoryInfoes.FirstOrDefault(c => c.CategoryId == id);
+                if (category != null)
+                {
+                    _context.DocumentCategoryInfoes.Remove(category);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+                else
+                {
+                    return Json(new { success = false, error = "Category not found" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                db.Dispose();
+                _context.Dispose();
             }
             base.Dispose(disposing);
         }
