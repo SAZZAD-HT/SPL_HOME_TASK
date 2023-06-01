@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="SPL_HOME_TASKModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="SPLModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="DocumentCategoryInfo">
           <Key>
             <PropertyRef Name="CategoryId" />
@@ -87,7 +87,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="SPL_HOME_TASKModelStoreContainer">
+        <EntityContainer Name="SPLModelStoreContainer">
           <EntitySet Name="DocumentCategoryInfo" EntityType="Self.DocumentCategoryInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DocumentInformation" EntityType="Self.DocumentInformation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileInformation" EntityType="Self.FileInformation" Schema="dbo" store:Type="Tables" />
@@ -109,7 +109,7 @@
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="SPL_HOME_TASKModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="SPLModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="DocumentCategoryInfo">
           <Key>
             <PropertyRef Name="CategoryId" />
@@ -198,7 +198,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="SPL_HOME_TASKEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="SPLEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="DocumentCategoryInfoes" EntityType="Self.DocumentCategoryInfo" />
           <EntitySet Name="DocumentInformations" EntityType="Self.DocumentInformation" />
           <EntitySet Name="FileInformations" EntityType="Self.FileInformation" />
@@ -221,9 +221,9 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="SPL_HOME_TASKModelStoreContainer" CdmEntityContainer="SPL_HOME_TASKEntities">
+        <EntityContainerMapping StorageEntityContainer="SPLModelStoreContainer" CdmEntityContainer="SPLEntities">
           <EntitySetMapping Name="DocumentCategoryInfoes">
-            <EntityTypeMapping TypeName="SPL_HOME_TASKModel.DocumentCategoryInfo">
+            <EntityTypeMapping TypeName="SPLModel.DocumentCategoryInfo">
               <MappingFragment StoreEntitySet="DocumentCategoryInfo">
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
                 <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
@@ -234,7 +234,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="DocumentInformations">
-            <EntityTypeMapping TypeName="SPL_HOME_TASKModel.DocumentInformation">
+            <EntityTypeMapping TypeName="SPLModel.DocumentInformation">
               <MappingFragment StoreEntitySet="DocumentInformation">
                 <ScalarProperty Name="DocumentIdentity" ColumnName="DocumentIdentity" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
@@ -248,7 +248,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="FileInformations">
-            <EntityTypeMapping TypeName="SPL_HOME_TASKModel.FileInformation">
+            <EntityTypeMapping TypeName="SPLModel.FileInformation">
               <MappingFragment StoreEntitySet="FileInformation">
                 <ScalarProperty Name="FileIdentity" ColumnName="FileIdentity" />
                 <ScalarProperty Name="DocumentIdentity" ColumnName="DocumentIdentity" />
@@ -262,7 +262,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="MetaDataInformations">
-            <EntityTypeMapping TypeName="SPL_HOME_TASKModel.MetaDataInformation">
+            <EntityTypeMapping TypeName="SPLModel.MetaDataInformation">
               <MappingFragment StoreEntitySet="MetaDataInformation">
                 <ScalarProperty Name="MetaIdentity" ColumnName="MetaIdentity" />
                 <ScalarProperty Name="DocumentIdentity" ColumnName="DocumentIdentity" />

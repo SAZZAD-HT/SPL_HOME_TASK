@@ -13,10 +13,10 @@ namespace SPL_HOME_TASK.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class SPL_HOME_TASKEntities : DbContext
+    public partial class SPLEntities : DbContext
     {
-        public SPL_HOME_TASKEntities()
-            : base("name=SPL_HOME_TASKEntities")
+        public SPLEntities()
+            : base("name=SPLEntities")
         {
         }
     
