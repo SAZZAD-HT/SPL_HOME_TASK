@@ -12,28 +12,21 @@ namespace SPL_HOME_TASK.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class DocumentInformation
+    public partial class DocumentCategoryInfo
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public DocumentInformation()
+        public DocumentCategoryInfo()
         {
-            this.FileInformations = new HashSet<FileInformation>();
-            this.MetaDataInformations = new HashSet<MetaDataInformation>();
+            this.DocumentInformations = new HashSet<DocumentInformation>();
         }
     
-        public long DocumentIdentity { get; set; }
         public int CategoryId { get; set; }
-        public string DocumentReferenceName { get; set; }
-        public System.DateTime DocumentDate { get; set; }
-        public string DocumentName { get; set; }
-        public string DocumentNameBangla { get; set; }
+        public string CategoryName { get; set; }
+        public string CategoryNameBangla { get; set; }
         public string Description { get; set; }
         public bool Status { get; set; }
     
-        public virtual DocumentCategoryInfo DocumentCategoryInfo { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<FileInformation> FileInformations { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<MetaDataInformation> MetaDataInformations { get; set; }
+        public virtual ICollection<DocumentInformation> DocumentInformations { get; set; }
     }
 }
