@@ -1,0 +1,141 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>File Information</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2>File Information</h2>
+
+    <div id="infoContainer">
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <th><label>File No</label></th>
+                        <th><label>File Name</label></th>
+                        <th><label>File Name (Bangla)</label></th>
+                        <th><label>Upload</label></th>
+                        <th><label>Description</label></th>
+                        <th><label>File Status</label></th>
+                        <th><label>File Type</label></th>
+                    </tr>
+                </thead>
+                <tr class="infoSet">
+                    <td><input type="text" class="file-no" /></td>
+                    <td><input type="text" class="file-name" /></td>
+                    <td><input type="text" class="file-name-bangla" /></td>
+                    <td> <input type="file" class="file-input" /></td>
+                    <td><input type="text" class="description" /></td>
+                    <td><input type="text" class="file-status" /></td>
+                    <td><label class="file-type"></label></td>
+                    <td>
+                    </td>
+                </tr>
+            </table>
+        </div> <button class="add-btn">Add Information</button>
+    </div>
+    <h2>Added Information</h2>
+    <table id="fileTable">
+        <thead>
+            <tr>
+                <th>File Name</th>
+                <th>File Type</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        $(document).ready(function () {
+            // Add new row for file information
+            $('.add-btn').click(function () {
+                var infoSet = $('.infoSet').last().clone();
+                infoSet.find('input').val('');
+                $('#infoContainer').append(infoSet);
+            });
+
+            // Handle file upload
+            $('.add-btn').on('click', function () {
+                var fileInput = $(this).closest('.infoSet').find('.file-input')[0];
+                var file = fileInput.files[0];
+
+                var formData = new FormData();
+                formData.append('file', file);
+
+                $.ajax({
+                    url: '@Url.Action("CreateFileWithInfo", "SPL")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (result) {
+                        if (result.success) {
+                            // File uploaded successfully, update the table
+                            var fileName = result.fileName;
+                            var fileType = getFileType(fileName);
+
+                            var row = '<tr><td>' + fileName + '</td><td>' + fileType + '</td></tr>';
+                            $('#fileTable tbody').append(row);
+
+                            // Update the file information in the input fields
+                            var fileNo = $(this).closest('.infoSet').find('.file-no').val();
+                            var fileName = $(this).closest('.infoSet').find('.file-name').val();
+                            var fileNameBangla = $(this).closest('.infoSet').find('.file-name-bangla').val();
+                            var description = $(this).closest('.infoSet').find('.description').val();
+                            var fileStatus = $(this).closest('.infoSet').find('.file-status').val();
+
+                            // Send the file information to the controller
+                            $.ajax({
+                                url: '@Url.Action("CreateFileWithInfo", "SPL")',
+                                type: 'POST',
+                                data: {
+
+                                    FileNo: fileNo,
+                                    FileName: fileName,
+                                    FileNameBangla: fileNameBangla,
+                                    Description: description,
+                                    FileStatus: fileStatus
+                                },
+                                success: function (response) {
+                                    // Handle the response from the controller
+                                    // Update the file status in the table or perform any other desired actions
+                                },
+                                error: function () {
+                                    alert('An error occurred while saving file information.');
+                                }
+                            });
+                        } else {
+                            // File upload failed, display the error message
+                            alert('File upload failed: ' + result.error);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred during file upload.');
+                    }
+                });
+            });
+
+            // Function to get the file type based on the file extension
+            function getFileType(fileName) {
+                var fileExtension = fileName.split('.').pop().toLowerCase();
+
+                if (fileExtension === 'pdf') {
+                    return 'PDF';
+                } else if (fileExtension === 'doc' || fileExtension === 'docx') {
+                    return 'Word Document';
+                } else if (fileExtension === 'xls' || fileExtension === 'xlsx') {
+                    return 'Excel Spreadsheet';
+                } else {
+                    return 'Unknown';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
