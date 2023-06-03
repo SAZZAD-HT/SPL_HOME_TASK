@@ -1,8 +1,4 @@
-﻿@{
-    ViewBag.Title = "Index";
-}
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -34,12 +30,14 @@
                     <td><input type="text" class="description" /></td>
                     <td><input type="text" class="file-status" /></td>
                     <td><label class="file-type"></label></td>
-                    <td>
-                    </td>
                 </tr>
             </table>
-        </div> <button class="add-btn">Add Information</button>
+        </div>
     </div>
+
+    <button class="add-btn">Add Information</button>
+    <button class="submit-btn">Submit</button>
+
     <h2>Added Information</h2>
     <table id="fileTable">
         <thead>
@@ -60,81 +58,55 @@
                 $('#infoContainer').append(infoSet);
             });
 
-            // Handle file upload
-            $('.add-btn').on('click', function () {
-                var fileInput = $(this).closest('.infoSet').find('.file-input')[0];
-                var file = fileInput.files[0];
+            // Submit button click event
+            $('.submit-btn').click(function () {
+                var files = [];
 
-                var formData = new FormData();
-                formData.append('file', file);
+                // Iterate through each added information row
+                $('.infoSet').each(function () {
+                    var fileNo = $(this).find('.file-no').val();
+                    var fileName = $(this).find('.file-name').val();
+                    var fileNameBangla = $(this).find('.file-name-bangla').val();
+                    var description = $(this).find('.description').val();
+                    var fileStatus = $(this).find('.file-status').val();
 
+                    // Create a file object
+                    var file = {
+                        FileNo: fileNo,
+                        FileName: fileName,
+                        FileNameBangla: fileNameBangla,
+                        Description: description,
+                        FileStatus: fileStatus
+                    };
+
+                    files.push(file);
+                });
+
+                // Perform AJAX post request to submit the files
                 $.ajax({
-                    url: '@Url.Action("CreateFileWithInfo", "SPL")',
+                    url: '@Url.Action("SubmitFiles", "File")',
                     type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (result) {
-                        if (result.success) {
-                            // File uploaded successfully, update the table
-                            var fileName = result.fileName;
-                            var fileType = getFileType(fileName);
+                    contentType: 'application/json',
+                    data: JSON.stringify(files),
+                    success: function (response) {
+                        // Clear the added information rows
+                        $('.infoSet').remove();
 
-                            var row = '<tr><td>' + fileName + '</td><td>' + fileType + '</td></tr>';
-                            $('#fileTable tbody').append(row);
+                        // Update the file table with the submitted files
+                        var tbody = $('#fileTable tbody');
+                        tbody.empty();
 
-                            // Update the file information in the input fields
-                            var fileNo = $(this).closest('.infoSet').find('.file-no').val();
-                            var fileName = $(this).closest('.infoSet').find('.file-name').val();
-                            var fileNameBangla = $(this).closest('.infoSet').find('.file-name-bangla').val();
-                            var description = $(this).closest('.infoSet').find('.description').val();
-                            var fileStatus = $(this).closest('.infoSet').find('.file-status').val();
-
-                            // Send the file information to the controller
-                            $.ajax({
-                                url: '@Url.Action("CreateFileWithInfo", "SPL")',
-                                type: 'POST',
-                                data: {
-
-                                    FileNo: fileNo,
-                                    FileName: fileName,
-                                    FileNameBangla: fileNameBangla,
-                                    Description: description,
-                                    FileStatus: fileStatus
-                                },
-                                success: function (response) {
-                                    // Handle the response from the controller
-                                    // Update the file status in the table or perform any other desired actions
-                                },
-                                error: function () {
-                                    alert('An error occurred while saving file information.');
-                                }
-                            });
-                        } else {
-                            // File upload failed, display the error message
-                            alert('File upload failed: ' + result.error);
-                        }
+                        $.each(response, function (index, file) {
+                            var row = $('<tr>').appendTo(tbody);
+                            $('<td>').text(file.FileName).appendTo(row);
+                            $('<td>').text(file.FileType).appendTo(row);
+                        });
                     },
-                    error: function () {
-                        alert('An error occurred during file upload.');
+                    error: function (xhr, status, error) {
+                        console.log(error);
                     }
                 });
             });
-
-            // Function to get the file type based on the file extension
-            function getFileType(fileName) {
-                var fileExtension = fileName.split('.').pop().toLowerCase();
-
-                if (fileExtension === 'pdf') {
-                    return 'PDF';
-                } else if (fileExtension === 'doc' || fileExtension === 'docx') {
-                    return 'Word Document';
-                } else if (fileExtension === 'xls' || fileExtension === 'xlsx') {
-                    return 'Excel Spreadsheet';
-                } else {
-                    return 'Unknown';
-                }
-            }
         });
     </script>
 </body>
