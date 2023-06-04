@@ -1,0 +1,147 @@
+﻿@model IEnumerable<SPL_HOME_TASK.Models.Documentinfo>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+
+
+<style>
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f2f2f2;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+        .header label {
+            margin-right: 10px;
+        }
+
+        .header input[type="text"] {
+            padding: 6px;
+            order: 2;
+        }
+    #documentTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        #documentTable th,
+        #documentTable td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        #documentTable th {
+            background-color: #f2f2f2;
+        }
+
+        #documentTable tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #documentTable tr:hover {
+            background-color: #e9e9e9;
+        }
+
+    #searchInput {
+        padding: 6px;
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="header">
+    <label>Document Information</label>
+    <input type="text" id="searchInput" placeholder="Search...">
+</div>
+
+<table id="documentTable">
+    <thead>
+        <tr>
+            <th>Tracking Number</th>
+            <th>Category Name</th>
+            <th>Document Name</th>
+            <th>Document Date</th>
+            <th>Store Name</th>
+            <th>Cabinet</th>
+            <th>Rack</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.DocumentIdentity</td>
+                <td>@item.CategoryName</td>
+                <td>@item.DocumentName</td>
+                <td>@item.DocumentDate</td>
+                <td>@item.MetaName</td>
+                <td>@item.MetaDescription</td>
+                <td>@item.FileName</td>
+                
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Function to filter table rows based on search input
+            $('#searchInput').on('input', function () {
+                var searchValue = $(this).val().toLowerCase();
+                $('#documentTable tbody tr').filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
+                });
+            });
+
+            $.ajax({
+                url: '@Url.Action("doc", "DocInfo")',
+                type: 'GET',
+                success: function (response) {
+                    if (response.success) {
+                        var data = response.data;
+
+                        // Iterate over the data and create table rows
+                        var tableBody = $('#documentTable tbody');
+                        $.each(data, function (index, item) {
+                            var row = $('<tr></tr>');
+                            row.append($('<td></td>').text(item.DocumentIdentity));
+                            row.append($('<td></td>').text(item.CategoryId));
+                            row.append($('<td></td>').text(item.CategoryName));
+                            row.append($('<td></td>').text(item.DocumentReferenceName));
+                            row.append($('<td></td>').text(item.DocumentDate));
+                            row.append($('<td></td>').text(item.DocumentName));
+                            row.append($('<td></td>').text(item.DocumentNameBangla));
+                            row.append($('<td></td>').text(item.Description));
+                            row.append($('<td></td>').text(item.Status));
+                            row.append($('<td></td>').text(item.MetaIdentity));
+                            row.append($('<td></td>').text(item.MetaName));
+                            row.append($('<td></td>').text(item.MetaNameBangla));
+                            row.append($('<td></td>').text(item.MetaDescription));
+                            row.append($('<td></td>').text(item.FileIdentity));
+                            row.append($('<td></td>').text(item.FileNo));
+                            row.append($('<td></td>').text(item.FileName));
+                            row.append($('<td></td>').text(item.FileNameBangla));
+                            row.append($('<td></td>').text(item.FileDescription));
+                            row.append($('<td></td>').text(item.FilePath));
+                            row.append($('<td></td>').text(item.FileStatus));
+
+                            tableBody.append(row);
+                        });
+                    } else {
+                        console.log('Error: ' + response.error);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log('AJAX Error: ' + error);
+                }
+            });
+        });
+    </script>
+}

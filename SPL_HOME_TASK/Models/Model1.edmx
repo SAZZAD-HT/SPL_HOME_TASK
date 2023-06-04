@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="SPLModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="SPLModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="DocumentCategoryInfo">
           <Key>
             <PropertyRef Name="CategoryId" />
@@ -27,6 +27,10 @@
           <Property Name="DocumentNameBangla" Type="nvarchar" MaxLength="500" />
           <Property Name="Description" Type="nvarchar" MaxLength="1500" />
           <Property Name="Status" Type="bit" Nullable="false" />
+          <Property Name="Store" Type="nchar" MaxLength="10" />
+          <Property Name="CabenetNo" Type="int" />
+          <Property Name="RackNo" Type="int" />
+          <Property Name="DrawerNo" Type="int" />
         </EntityType>
         <EntityType Name="FileInformation">
           <Key>
@@ -105,8 +109,7 @@
             <End Role="MetaDataInformation" EntitySet="MetaDataInformation" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="SPLModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -136,6 +139,10 @@
           <NavigationProperty Name="DocumentCategoryInfo" Relationship="Self.FK_DocumentInformation_CategoryId" FromRole="DocumentInformation" ToRole="DocumentCategoryInfo" />
           <NavigationProperty Name="FileInformations" Relationship="Self.FK_FileInformation_DocumentIdentity" FromRole="DocumentInformation" ToRole="FileInformation" />
           <NavigationProperty Name="MetaDataInformations" Relationship="Self.FK_MetaDataInformation_DocumentIdentity" FromRole="DocumentInformation" ToRole="MetaDataInformation" />
+          <Property Name="Store" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="CabenetNo" Type="Int32" />
+          <Property Name="RackNo" Type="Int32" />
+          <Property Name="DrawerNo" Type="Int32" />
         </EntityType>
         <EntityType Name="FileInformation">
           <Key>
@@ -236,6 +243,10 @@
           <EntitySetMapping Name="DocumentInformations">
             <EntityTypeMapping TypeName="SPLModel.DocumentInformation">
               <MappingFragment StoreEntitySet="DocumentInformation">
+                <ScalarProperty Name="DrawerNo" ColumnName="DrawerNo" />
+                <ScalarProperty Name="RackNo" ColumnName="RackNo" />
+                <ScalarProperty Name="CabenetNo" ColumnName="CabenetNo" />
+                <ScalarProperty Name="Store" ColumnName="Store" />
                 <ScalarProperty Name="DocumentIdentity" ColumnName="DocumentIdentity" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
                 <ScalarProperty Name="DocumentReferenceName" ColumnName="DocumentReferenceName" />

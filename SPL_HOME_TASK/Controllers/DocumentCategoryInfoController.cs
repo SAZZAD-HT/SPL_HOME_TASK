@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
 using SPL_HOME_TASK.Models;
-using System.Data.SqlClient;
+
 
 namespace SPL_HOME_TASK.Controllers
 {

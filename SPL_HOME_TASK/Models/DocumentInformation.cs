@@ -29,6 +29,10 @@ namespace SPL_HOME_TASK.Models
         public string DocumentNameBangla { get; set; }
         public string Description { get; set; }
         public bool Status { get; set; }
+        public string Store { get; set; }
+        public Nullable<int> CabenetNo { get; set; }
+        public Nullable<int> RackNo { get; set; }
+        public Nullable<int> DrawerNo { get; set; }
     
         public virtual DocumentCategoryInfo DocumentCategoryInfo { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
