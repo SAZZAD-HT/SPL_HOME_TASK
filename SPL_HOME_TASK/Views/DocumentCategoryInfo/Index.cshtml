@@ -2,10 +2,49 @@
 @{
     ViewBag.Title = "Index";
 }
+<style>
+    .center {
+        display: flex;
+        justify-content: center;
+    }
+</style>
 
-<h2>Index</h2>
+<div class="center">
+    <button id="createCategoryBtn" class="btn btn-primary">Create Category</button>
+</div>
 
-<h2>Category Management</h2>
+<h2>Document Category List</h2>
+
+<style>
+    .center {
+        display: flex;
+        justify-content: center;
+    }
+
+    .pagination {
+        margin-top: 10px;
+        text-align: center;
+    }
+
+        .pagination a {
+            display: inline-block;
+            padding: 8px 16px;
+            text-decoration: none;
+            background-color: #f2f2f2;
+            color: black;
+        }
+
+            .pagination a.active {
+                background-color: #4CAF50;
+                color: white;
+            }
+
+            .pagination a:hover:not(.active) {
+                background-color: #ddd;
+            }
+</style>
+
+
 
 <div id="categoryList">
     <table class="table">
@@ -20,49 +59,50 @@
         </thead>
         <tbody></tbody>
     </table>
-    <button id="createCategoryBtn" class="btn btn-primary">Create Category</button>
-</div>
+    <div class="pagination">
+        <a href="#" id="prevPageBtn">&laquo; Previous</a>
+        <a href="#" id="nextPageBtn">Next &raquo;</a>
+    </div>
+</div><div id="categoryForm" style="display:none;">
+        <h4>Create/Edit Category</h4>
+        <form id="createCategoryForm" class="form-horizontal">
+            @Html.ValidationSummary(true)
 
-<div id="categoryForm" style="display:none;">
-    <h4>Create/Edit Category</h4>
-    <form id="createCategoryForm" class="form-horizontal">
-        @Html.ValidationSummary(true)
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CategoryName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CategoryName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CategoryName, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.CategoryName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.CategoryName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.CategoryName, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
-      
-        <div class="form-group">
-            @Html.LabelFor(model => model.CategoryNameBangla, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CategoryNameBangla, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CategoryNameBangla, "", new { @class = "text-danger" })  <br />
-            </div>
-        </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-primary" />
-                <button id="cancelCategoryBtn" class="btn btn-default">Cancel</button>
+            <div class="form-group">
+                @Html.LabelFor(model => model.CategoryNameBangla, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.CategoryNameBangla, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.CategoryNameBangla, "", new { @class = "text-danger" })  <br />
+                </div>
             </div>
-        </div>
-    </form>
-</div>
 
-@section scripts {
-    <script type="text/javascript">
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                    <button id="cancelCategoryBtn" class="btn btn-default">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    @section scripts {
+        <script type="text/javascript">
         $(document).ready(function () {
             // Load categories on page load
             loadCategories();
@@ -179,6 +219,7 @@
                     }
                 });
             }
+
         });
-    </script>
-}
+        </script>
+    }

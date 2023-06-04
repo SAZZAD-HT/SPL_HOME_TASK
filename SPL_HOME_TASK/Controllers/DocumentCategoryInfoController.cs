@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
 using SPL_HOME_TASK.Models;
+using System.Data.SqlClient;
 
 namespace SPL_HOME_TASK.Controllers
 {
@@ -26,11 +28,36 @@ namespace SPL_HOME_TASK.Controllers
             return Json(categories, JsonRequestBehavior.AllowGet);
         }
 
+
         [HttpPost]
         public JsonResult Create(DocumentCategoryInfo category)
         {
             try
             {
+                int lastId = 0;
+
+                string connectionString = "Data Source=TRIFO\\SQLEXPRESS;Initial Catalog=SPL;Integrated Security=True;;Application Name=EntityFramework"; // Replace with your actual connection string
+                SqlConnection connection = new SqlConnection(connectionString);
+                
+                    connection.Open();
+
+                    // Retrieve the last ID from the table
+                    string query = "SELECT MAX(CategoryId) FROM DocumentCategoryInfo"; // Replace YourTableName with the actual table name
+                    SqlCommand command = new SqlCommand(query, connection);
+                    object result = command.ExecuteScalar();
+                    if (result != DBNull.Value)
+                    {
+                        lastId = Convert.ToInt32(result);
+                    }
+
+                    // Increment the last ID by 1
+                    int newId = lastId + 1;
+
+                   category.CategoryId = newId; 
+
+
+
+                
                 _context.DocumentCategoryInfoes.Add(category);
                 _context.SaveChanges();
 

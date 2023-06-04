@@ -129,6 +129,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\DocInfoController.cs" />
     <Compile Include="Controllers\DocumentCategoryInfoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SPLController.cs" />
@@ -239,6 +240,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Migrations\" />
     <Folder Include="Uploded\" />
+    <Folder Include="Views\DocInfo\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

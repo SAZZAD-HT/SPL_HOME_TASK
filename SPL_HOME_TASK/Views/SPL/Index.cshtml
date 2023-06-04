@@ -60,7 +60,7 @@
 
             // Submit button click event
             $('.submit-btn').click(function () {
-                var files = [];
+                var files = [0];
 
                 // Iterate through each added information row
                 $('.infoSet').each(function () {
@@ -78,32 +78,53 @@
                         Description: description,
                         FileStatus: fileStatus
                     };
+                    console.log(file)
 
                     files.push(file);
+                    console.log(files)
                 });
 
                 // Perform AJAX post request to submit the files
                 $.ajax({
-                    url: '@Url.Action("SubmitFiles", "File")',
+                    url: "/SPL/CreateFileWithInfo",
                     type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(files),
+                    
+                    data:files
                     success: function (response) {
-                        // Clear the added information rows
-                        $('.infoSet').remove();
-
-                        // Update the file table with the submitted files
-                        var tbody = $('#fileTable tbody');
-                        tbody.empty();
-
-                        $.each(response, function (index, file) {
-                            var row = $('<tr>').appendTo(tbody);
-                            $('<td>').text(file.FileName).appendTo(row);
-                            $('<td>').text(file.FileType).appendTo(row);
-                        });
+                        // Handle success response
                     },
                     error: function (xhr, status, error) {
                         console.log(error);
+                    }
+                });
+                var formData = new FormData();
+                var file = $("#fileUpload").get(0).files[0];
+                formData.append("file", file);
+                console.log(formData)
+                $.ajax({
+                    url: "/SPL/CreateFileWithInfo",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        if (data.success) {
+                            var file = data.file;
+                            var row = "<tr>" +
+                                "<td>" + file.FileNo + "</td>" +
+                                "<td>" + file.FileName + "</td>" +
+                                "<td>" + file.FileNameBangla + "</td>" +
+                                "<td>" + file.Description + "</td>" +
+                                "<td>" + file.FilePath + "</td>" +
+                                "<td>" + file.FileStatus + "</td>" +
+                                "</tr>";
+                            $("#fileTable tbody").append(row);
+                        } else {
+                            alert("File upload failed!");
+                        }
+                    },
+                    error: function () {
+                        alert("An error occurred while uploading the file.");
                     }
                 });
             });
